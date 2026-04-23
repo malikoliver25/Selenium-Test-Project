@@ -14,7 +14,12 @@ import org.openqa.selenium.firefox.FirefoxOptions;
  */
 public class DriverManager {
 
-    // Manufactures a specific WebDriver based on the provided browser name.
+    /*
+     * Manufactures a specific WebDriver based on the provided browser name.
+     * Supports headless execution for CI/CD environments.
+     * * @param browserType The browser to instantiate (chrome, firefox, edge)
+     * @return A configured WebDriver instance
+     */
     public static WebDriver getDriver(String browserType) {
         WebDriver driver;
 
@@ -44,6 +49,7 @@ public class DriverManager {
                 // Default to Chrome
                 ChromeOptions chromeOptions = new ChromeOptions();
                 if (isHeadless) {
+                    // Optimized flags for stable execution in Ubuntu/GitHub Runners
                     chromeOptions.addArguments("--headless=new");
                     chromeOptions.addArguments("--disable-gpu");
                     chromeOptions.addArguments("--no-sandbox");

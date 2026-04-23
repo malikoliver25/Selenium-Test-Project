@@ -11,14 +11,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
 
       - name: Run Selenium Tests
-        run: mvn clean test -Dheadless=true
+        # -pl targets the specific module, -am ensures dependencies are built
+        run: mvn clean test -Dheadless=true -pl ui-automation-selenium -am
