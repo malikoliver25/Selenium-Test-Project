@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  # Silences the deprecation warning and opts into the latest GitHub runner node version
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,5 +26,20 @@ jobs:
           cache: maven
 
       - name: Run Selenium Tests
-        # -pl targets the specific module, -am ensures dependencies are built
-        run: mvn clean test -Dheadless=true -pl ui-automation-selenium -am
+        # This ensures Maven runs inside the specific module folder
+        working-directory: ./ui-automation-selenium
+        run: mvn clean test -Dheadless=true
+
+      - name: Generate Allure Report
+        # Only runs if tests complete (even if some failed) to show results
+        if: always()
+        working-directory: ./ui-automation-selenium
+        run: mvn allure:report
+
+      - name: Upload Allure Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: ui-automation-selenium/allure-results
+          retention-days: 20
